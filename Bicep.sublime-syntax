@@ -1,0 +1,110 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/syntax.html
+# See https://github.com/Azure/bicep/tree/main/docs/spec
+version: 2
+scope: source.bicep
+extends: Packages/JavaScript/JavaScript.sublime-syntax
+file_extensions: [bicep]
+contexts:
+
+  resource-bicep:
+    - match: \bresource\b
+      scope: keyword.declaration.bicep
+      push:
+        - - match: \bexisting\b
+            scope: storage.modifier.bicep
+            pop: true
+          - include: else-pop
+        - - include: statement
+        - - match: \S+
+            scope: entity.name.struct.bicep
+            pop: true
+
+  param-bicep:
+    - match: \bparam\b
+      scope: keyword.declaration.bicep
+      push:
+        - - match: \b(?:bool|int|array|string|object)\b
+            scope: storage.type.bicep
+            pop: true
+          - include: else-pop
+        - - match: \S+
+            scope: variable.parameter.bicep
+            pop: true
+          - include: else-pop
+
+  output-bicep:
+    - match: \boutput\b
+      scope: keyword.declaration.bicep
+      push:
+        - - match: \b(?:bool|int|array|string|object)\b
+            scope: storage.type.bicep
+            pop: true
+          - include: else-pop
+        - - match: \S+
+            scope: variable.parameter.bicep
+            pop: true
+          - include: else-pop
+
+  statement:
+    - meta_prepend: true
+    - include: resource-bicep
+    - include: param-bicep
+    - include: output-bicep
+    - match: '\b(?:targetScope)\b'
+      scope: keyword.declaration.bicep
+
+  object-literal-contents:
+    - meta_prepend: true
+    - include: resource-bicep
+
+  # override
+  literal-string:
+    - include: multiline-string-bicep
+    - include: basic-string-bicep
+
+  expression-list:
+    - meta_prepend: true
+    - match: \bfor\b
+      scope: keyword.control.loop.for.bicep
+      push:
+        - - include: statement
+        - - match: '\bin\b'
+            scope: keyword.operator.word.bicep
+            pop: true
+        - - match: \S+
+            scope: variable.other.readwrite.bicep
+            pop: true
+
+  basic-string-bicep:
+    - match: "'"
+      scope: punctuation.definition.string.begin.bicep
+      set:
+        - meta_include_prototype: false
+        - meta_scope: meta.string.bicep string.quoted.other.bicep
+        - match: "'"
+          scope: punctuation.definition.string.end.bicep
+          pop: true
+        - match: '\$\{'
+          scope: punctuation.section.interpolation.begin.bicep
+          push:
+            - clear_scopes: 1
+            - meta_scope: meta.interpolation.bicep
+            - meta_content_scope: source.bicep.embedded
+            - match: '\}'
+              scope: punctuation.section.interpolation.end.bicep
+              pop: true
+            - match: (?=\S)
+              push: expression
+        - include: string-content
+
+  multiline-string-bicep:
+    - match: "'''"
+      scope: punctuation.definition.string.begin.bicep
+      set:
+        - meta_include_prototype: false
+        - meta_scope: meta.string.bicep string.quoted.other.bicep
+        - match: "'''"
+          scope: punctuation.definition.string.end.bicep
+          pop: true
