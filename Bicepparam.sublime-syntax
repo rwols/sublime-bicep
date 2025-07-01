@@ -1,0 +1,58 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/syntax.html
+# See https://github.com/Azure/bicep/tree/main/docs/spec
+version: 2
+scope: source.bicepparam
+extends: Packages/Bicep/Bicep.sublime-syntax
+file_extensions: [bicepparam]
+contexts:
+
+  using-bicepparam:
+    - match: \busing\b
+      scope: keyword.declaration.bicepparam
+      push:
+        - - match: \bnone\b
+            scope: constant.language.bicepparam
+            pop: true
+          - match: "'"
+            scope: punctuation.definition.string.begin.bicep
+            set:
+              - meta_include_prototype: false
+              - meta_scope: meta.string.bicep string.quoted.other.bicep
+              - match: "'"
+                scope: punctuation.definition.string.end.bicep
+                pop: true
+              - include: string-content
+          - include: else-pop
+
+  param-bicepparam:
+    - match: \bparam\b
+      scope: keyword.declaration.bicep
+      push:
+        - - match: '='
+            scope: keyword.operator.assignment.bicep
+            push: expression
+            pop: true
+          - include: else-pop
+        - - match: \S+
+            scope: variable.parameter.bicep
+            pop: true
+
+  var-bicepparam:
+    - match: \bvar\b
+      scope: keyword.declaration.bicep
+      push:
+        - - match: '='
+            scope: keyword.operator.assignment.bicep
+            push: expression
+            pop: true
+          - include: else-pop
+        - - match: \S+
+            scope: variable.other.readwrite.bicep
+            pop: true
+
+  statement:
+    - include: using-bicepparam
+    - include: param-bicepparam
+    - include: var-bicepparam
