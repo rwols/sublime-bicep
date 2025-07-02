@@ -1,7 +1,5 @@
 %YAML 1.2
 ---
-# See http://www.sublimetext.com/docs/syntax.html
-# See https://github.com/Azure/bicep/tree/main/docs/spec
 version: 2
 scope: source.bicepparam
 extends: Packages/Bicep/Bicep.sublime-syntax

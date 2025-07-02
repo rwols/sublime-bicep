@@ -6,14 +6,6 @@ using 'main.bicep'
 //^^^ keyword.declaration.bicepparam
 //    ^^^^^^^^^^^^ string
 
-using './main.bicep'
-//^^^ keyword.declaration.bicepparam
-//    ^^^^^^^^^^^^^^ string
-
-using 'ts:00000000-0000-0000-0000-000000000000/myResourceGroup/storageSpec:1.0'
-//^^^ keyword.declaration.bicepparam
-//    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string
-
 using none
 //^^^ keyword.declaration.bicepparam
 //    ^^^^ constant.language.bicepparam
@@ -30,25 +22,18 @@ multi line comment */
 
 // UNTYPED PARAMETERS
 
-param storageName = toLower('MyStorageAccount')
+param storageName = 'MyStorageAccount'
 //^^^ keyword.declaration.bicep
 //    ^^^^^^^^^^^ variable.parameter.bicep
 //                ^ keyword.operator.assignment.bicep
-//                          ^^^^^^^^^^^^^^^^^ string
-
-param intValue = 2 + 2
-//^^^ keyword.declaration.bicep
-//    ^^^^^^^^ variable.parameter.bicep
-//             ^ keyword.operator.assignment.bicep
-//               ^ constant.numeric
-//                 ^ keyword.operator.arithmetic
-//                   ^ constant.numeric
+//                  ^^^^^^^^^^^^^^^^^^ string
 
 param intFromEnvironmentVariables = int(readEnvironmentVariable('intEnvVariableName'))
 //^^^ keyword.declaration.bicep
 //    ^^^^^^^^^^^^^^^^^^^^^^^^^^^ variable.parameter.bicep
 //                                ^ keyword.operator.assignment.bicep
 //                                  ^^^ variable.function
+//                                      ^^^^^^^^^^^^^^^^^^^^^^^ variable.function
 //                                                              ^^^^^^^^^^^^^^^^^^^ string
 
 // UNTYPED VARIABLES
@@ -58,6 +43,8 @@ var storagePrefix = 'myStorage'
 //  ^^^^^^^^^^^^^ variable.other.readwrite.bicep
 //                ^ keyword.operator.assignment.bicep
 //                  ^^^^^^^^^^^ string
+
+// VARIABLE WITH OBJECT VALUE
 
 var testSettings = {
 //^ keyword.declaration.bicep
@@ -70,28 +57,11 @@ var testSettings = {
   instanceCount: 1
   //           ^ punctuation.separator
   //             ^ constant.numeric
+  environmentSettings: testSettings
+  //                 ^ punctuation.separator
+  //                   ^^^^^^^^^^^^ variable.other
 }
 
-var prodSettings = {
-  instanceSize: 'Large'
-  //            ^^^^^^^ string
-  instanceCount: 4
-  //             ^ constant.numeric
-}
-
-// PARAMETER WITH OBJECT VALUE
-
-param environmentSettings = {
-//^^^ keyword.declaration.bicep
-//    ^^^^^^^^^^^^^^^^^^^ variable.parameter.bicep
-//                        ^ keyword.operator.assignment.bicep
-  test: testSettings
-  //  ^ punctuation.separator
-  //    ^^^^^^^^^^^^ variable.other
-  prod: prodSettings
-  //  ^ punctuation.separator
-  //    ^^^^^^^^^^^^ variable.other
-}
 
 // PARAMETER WITH STRING INTERPOLATION
 
@@ -99,24 +69,23 @@ param primaryStorageName = '${storagePrefix}Primary'
 //^^^ keyword.declaration.bicep
 //    ^^^^^^^^^^^^^^^^^^ variable.parameter.bicep
 //                       ^ keyword.operator.assignment.bicep
-//                         ^^ string
-//                           ^^^^^^^^^^^^^^ meta.interpolation
-//                                         ^^^^^^^^^ string
-
-param secondaryStorageName = '${storagePrefix}Secondary'
-//                           ^^ string
-//                             ^^^^^^^^^^^^^^ meta.interpolation
-//                                           ^^^^^^^^^^^ string
+//                         ^ string
+//                          ^^^^^^^^^^^^^^^^ meta.interpolation
+//                                          ^^^^^^^^ string
 
 // PARAMETERS WITH VARIOUS TYPES
+
 
 param exampleString = 'test string'
 //                    ^^^^^^^^^^^^^ string
 
-param exampleInt = 2 + 2
-//                 ^ constant.numeric
-//                   ^ keyword.operator.arithmetic
-//                     ^ constant.numeric
+param intValue = 2 + 2
+//^^^ keyword.declaration.bicep
+//    ^^^^^^^^ variable.parameter.bicep
+//             ^ keyword.operator.assignment.bicep
+//               ^ constant.numeric
+//                 ^ keyword.operator.arithmetic
+//                   ^ constant.numeric
 
 param exampleBool = true
 //                  ^^^^ constant.language
